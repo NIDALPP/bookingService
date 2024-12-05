@@ -1,8 +1,9 @@
+const { json } = require("express");
 const { updateOne } = require("../utils/connectors");
 const { create } = require("../utils/connectors");
 const { findOne } = require("../utils/connectors");
 const { find } = require("../utils/connectors")
-
+const xlsx= require('xlsx')
 
 module.exports = {
     ShowAll: async (req, res) => {
@@ -18,25 +19,20 @@ module.exports = {
                     name: product.name,
                     price: product.price,
                 }));
-
                 return { categoryName: category.name, products };
-
             }));
-
             res.status(200).json({ categories: categoriesWithProducts });
         } catch (error) {
             console.error(error)
             res.status(500).json({ message: "Error finding categories" })
-
         }
-
     },
     showAllProduct: async (req, res) => {
         try {
             const categoryName = req.body.name
 
             const categoryResponse = await findOne("Category", { name: categoryName })
-            if ( !categoryResponse.data) {
+            if (!categoryResponse.data) {
 
                 return res.status(404).json({ message: `category ${categoryName} not found` });
 
@@ -118,53 +114,80 @@ module.exports = {
             res.status(500).json({ message: "An error occurred while adding to cart." });
         }
     },
-        placeOrder: async (req, res) => {
-            try {
-                const { userId } = req.body;
+    placeOrder: async (req, res) => {
+        try {
+            const { userId } = req.body;
 
-                if (!userId) {
-                    return res.status(400).json({ message: "User ID is required." });
-                }
-                const userResponse = await findOne("User", { userId });
-                const user = userResponse?.data;
-                if (!user) {
-                    return res.status(404).json({ message: "User not found." });
-                }
-                const cartResponse = await findOne("Cart", { userId });
-                const cart = cartResponse?.data;
-                if (!cart || cart.items.length === 0) {
-                    return res.status(400).json({ message: "Cart is empty. Add items to your cart before placing an order." });
-                }
-                console.log(cart)
-                let totalAmount = 0;
-                for (const item of cart.items) {
-                    const productResponse = await findOne("Product", { productId: item.productId });
-                    const product = productResponse?.data;
-
-                    totalAmount += item.quantity * product.price;
-                }
-                const orderResponse = await create("order", {
-                    userId,
-                    items: cart.items,
-                    totalAmount,
-                    status: "Placed",
-                    // createdAt: new Date()
-                });
-                const order=orderResponse?.data
-                console.log(order)
-                if (!orderResponse) {
-                    return res.status(500).json({ message: "Failed to create the order." });
-                }
-
-                await updateOne("Cart", { userId }, { items: [] });
-                res.status(200).json({ message: "Order placed successfully.", order });
-            } catch (error) {
-                console.error("Error in placeOrder:", error.message || error);
-                res.status(500).json({ message: "An error occurred while placing the order." });
+            if (!userId) {
+                return res.status(400).json({ message: "User ID is required." });
             }
-        }
+            const userResponse = await findOne("User", { userId });
+            const user = userResponse?.data;
+            if (!user) {
+                return res.status(404).json({ message: "User not found." });
+            }
+            const cartResponse = await findOne("Cart", { userId });
+            const cart = cartResponse?.data;
+            if (!cart || cart.items.length === 0) {
+                return res.status(400).json({ message: "Cart is empty. Add items to your cart before placing an order." });
+            }
+            // console.log(cart.items)
 
+            let totalAmount = 0;
+            for (const item of cart.items) {
+                const productResponse = await findOne("Product", { productId: item.productId });
+                const product = productResponse?.data;
+
+                totalAmount += item.quantity * product.price;
+            }
+            const orderResponse = await create("order", {
+                userId,
+                items: cart.items,
+                totalAmount,
+                status: "Placed",
+                // createdAt: new Date()
+            });
+            const order = orderResponse?.data
+            // console.log(order);
+            
+            try {
+                
+                var orderDetails=[]
+                orderDetails = cart.items.map(item => ({
+                ProductID: item.productId,
+                Quantity: item.quantity,
+            }));
+            orderDetails.unshift({userId:userId,orderId:order.orderId})
+
+            orderDetails.push({ TotalAmount: totalAmount });
+
+            } catch (error) {
+                console.error(error);
+                
+                
+            }
+
+
+            
+            const sheet=xlsx.utils.json_to_sheet(orderDetails)
+            const workbook=xlsx.utils.book_new()
+            xlsx.utils.book_append_sheet(workbook,sheet)
+
+            xlsx.writeFile(workbook,`${userId}orders.xlsx`)
+
+            if (!orderResponse) {
+                return res.status(500).json({ message: "Failed to create the order." });
+            }
+
+            await updateOne("Cart", { userId }, { items: [] });
+            res.status(200).json({ message: "Order placed successfully.", order });
+        } catch (error) {
+            console.error("Error in placeOrder:", error.message || error);
+            res.status(500).json({ message: "An error occurred while placing the order." });
+        }
     }
+
+}
 
 
 
