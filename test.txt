@@ -1,0 +1,1 @@
+{"status":"success","data":{"userId":"USR002","items":[{"productId":"PDT001","quantity":15,"price":1299,"_id":"6751b4e5d3dd1e3bdf07acf2"}],"status":"Placed","totalAmount":19485,"_id":"6751b55dd3dd1e3bdf07ad1c","orderId":"ORD061","__v":0}}

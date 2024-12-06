@@ -1,9 +1,10 @@
 const { json } = require("express");
-const { updateOne } = require("../utils/connectors");
-const { create } = require("../utils/connectors");
-const { findOne } = require("../utils/connectors");
-const { find } = require("../utils/connectors")
-const xlsx= require('xlsx')
+const { updateOne } = require("../utils/connectors.js");
+const { create } = require("../utils/connectors.js");
+const { findOne } = require("../utils/connectors.js");
+const { find } = require("../utils/connectors.js")
+const xlsx = require('xlsx')
+const fs = require('fs')
 
 module.exports = {
     ShowAll: async (req, res) => {
@@ -149,31 +150,31 @@ module.exports = {
             });
             const order = orderResponse?.data
             // console.log(order);
-            
+
             try {
-                
-                var orderDetails=[]
-                orderDetails = cart.items.map(item => ({
-                ProductID: item.productId,
-                Quantity: item.quantity,
-            }));
-            orderDetails.unshift({userId:userId,orderId:order.orderId})
 
-            orderDetails.push({ TotalAmount: totalAmount });
+                // var orderDetails=[]
+                var orderDetails = cart.items.map(item => ({
+                    ProductID: item.productId,
+                    Quantity: item.quantity,
+                }));
+                orderDetails.unshift({ userId: userId, orderId: order.orderId })
 
+                orderDetails.push({ TotalAmount: totalAmount });
             } catch (error) {
                 console.error(error);
-                
-                
+
+
             }
 
 
-            
-            const sheet=xlsx.utils.json_to_sheet(orderDetails)
-            const workbook=xlsx.utils.book_new()
-            xlsx.utils.book_append_sheet(workbook,sheet)
+            console.log(orderDetails)
+            fs.writeFile('test.txt', JSON.stringify(orderResponse))
+            const sheet = xlsx.utils.json_to_sheet(orderDetails)
+            const workbook = xlsx.utils.book_new()
+            xlsx.utils.book_append_sheet(workbook, sheet)
 
-            xlsx.writeFile(workbook,`${userId}orders.xlsx`)
+            xlsx.writeFile(workbook, `${userId}orders.xlsx`)
 
             if (!orderResponse) {
                 return res.status(500).json({ message: "Failed to create the order." });

@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const createError=require('http-errors')
 
 
 // const port = 3002
@@ -14,9 +15,9 @@ app.use('/booking', bookingRoute)
 app.use((err, req, res, next) => {
     res.status(err.status || 500)
 
-    res({
-        status: err.status || 500,
-        message: err.message
+    res.send({
+        error:{status: err.status || 500,
+        message: err.message}
     })
 })
 const port = process.env.PORT || 3002
