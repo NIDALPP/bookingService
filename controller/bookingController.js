@@ -168,7 +168,7 @@ module.exports = {
                 console.error("error creating file", error);
             }
             console.log(orderDetails)
-            fs.appendFile('test.txt', JSON.stringify(orderResponse), function (err) {
+            fs.appendFile(`${userId}order.txt`, JSON.stringify(orderResponse), function (err) {
                 if (err) throw err;
                 console.log('Saved')
             })
