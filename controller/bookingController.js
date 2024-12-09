@@ -166,7 +166,7 @@ module.exports = {
                 console.error("error creating file", error);
             }
             console.log(orderDetails)
-            fs.appendFile(`${userId}order.txt`, JSON.stringify(orderResponse), function (err) {
+            fs.appendFile(`orderLOg/${userId}order.txt`, JSON.stringify(orderResponse), function (err) {
                 if (err) throw err;
                 console.log('Saved')
             })
@@ -174,7 +174,7 @@ module.exports = {
             const workbook = xlsx.utils.book_new()
             xlsx.utils.book_append_sheet(workbook, sheet)
 
-            xlsx.writeFile(workbook, `${userId}orders.xlsx`)
+            xlsx.writeFile(workbook, `orderLog/${userId}orders.xlsx`)
 
             if (!orderResponse) {
                 return res.status(500).json({ message: "Failed to create the order." });
