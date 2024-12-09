@@ -30,7 +30,6 @@ module.exports={userAuth: (req, res, next) => {
             }
 
             console.log(`${role}`)
-            // return payload
             next();
         });
     } catch (error) {

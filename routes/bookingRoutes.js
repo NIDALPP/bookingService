@@ -5,7 +5,7 @@ const {userAuth} = require('../helpers/userAuth')
 
 
 
-router.post('/showProducts', controller.ShowAll)
+router.post('/showCategories', controller.ShowAll)
 router.post('/showAllProducts', controller.showAllProduct)
 router.post('/addToCart',userAuth, controller.addToCart)
 router.post('/placeOrder',userAuth, controller.placeOrder)
