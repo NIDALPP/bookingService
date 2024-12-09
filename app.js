@@ -1,10 +1,7 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
-const createError=require('http-errors')
 
-
-// const port = 3002
 app.use(morgan('dev'))
 const bookingRoute = require('./routes/bookingRoutes')
 

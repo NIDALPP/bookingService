@@ -1,5 +1,3 @@
-const { json } = require("express");
-const { verify } = require("crypto");
 const { updateOne } = require("../utils/connectors.js");
 const { create } = require("../utils/connectors.js");
 const { findOne } = require("../utils/connectors.js");
