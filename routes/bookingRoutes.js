@@ -5,8 +5,8 @@ const {userAuth} = require('../helpers/userAuth')
 
 
 
-router.post('/showAllCategories', controller.ShowAll)
-router.post('/showAllProducts', controller.showAllProduct)
 router.post('/addToCart',userAuth, controller.addToCart)
 router.post('/placeOrder',userAuth, controller.placeOrder)
+
+
 module.exports = router

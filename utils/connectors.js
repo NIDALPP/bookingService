@@ -53,5 +53,19 @@ module.exports = {
             console.error("Error in updateOne:", error.message || error);
             throw new Error("Unable to update record");
         }
+    },
+    aggregate:async(model,query)=>{
+        try {
+            const Result = await axios.post(dbUrl + '/records',{
+                model,query
+            })
+            console.log(Result,'Result');
+            
+            return Result?.data || null;
+            
+        } catch (error) {
+            console.error("Error in aggregate:", error.message || error);
+            
+        }
     }
 }
