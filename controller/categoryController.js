@@ -18,9 +18,9 @@ module.exports = {
                     }
                 },
                 {
-                    // $match: {
-                    //     subcategories: { $ne: [] }
-                    // }
+                    $match: {
+                        subcategories: { $ne: [] }
+                    }
                 },
                 {
                     $project: {
