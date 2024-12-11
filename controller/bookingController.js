@@ -4,7 +4,6 @@ const { findOne } = require("../utils/connectors.js");
 const { find } = require("../utils/connectors.js")
 const xlsx = require('xlsx')
 const fs = require('fs');
-const { aggregate } = require("../utils/connectors.js");
 
 module.exports = {
     addToCart: async (req, res) => {

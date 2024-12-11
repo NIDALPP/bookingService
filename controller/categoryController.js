@@ -4,7 +4,7 @@ const { aggregate } = require("../utils/connectors");
 module.exports = {
     ShowAllCat: async (req, res) => {
         try {
-            const {categoryId} = req.body
+            const { categoryId } = req.body
             const agg = [
                 {
                     $match: { categoryId: categoryId }
@@ -28,8 +28,6 @@ module.exports = {
                         categoryId: 1,
                         categoryName: "$name",
                         subcategories: {
-
-
                             $map: {
                                 input: "$subcategories",
                                 as: "subcategory",
@@ -58,8 +56,8 @@ module.exports = {
         try {
 
 
-            const {category} = req.body
-            // aggregtion
+            const { category } = req.body
+            // aggregation
             let agg = [
                 {
                     $match: { category: category }
@@ -74,8 +72,8 @@ module.exports = {
                 },
                 {
                     $unwind: {
-                        path: "$category", 
-                        preserveNullAndEmptyArrays: true 
+                        path: "$category",
+                        preserveNullAndEmptyArrays: true
                     }
                 },
                 {
@@ -83,25 +81,10 @@ module.exports = {
                         _id: 0,
                         productId: 1,
                         productName: "$name",
-                        image_url:1,
-                        price:1,
-                        categoryName:"$category.name",
-                        categoryId:"$category.categoryId",
-
-                        // stock:1
-
-
-                        // product: { $arrayElemAt: ["$products.name", 0] }
-                        // products: {
-                        //     $map: {
-                        //         input: "$products",
-                        //         as: "product",
-                        //         in: {
-
-                        //             productName: "$$product.name",
-                        //             price:"$$product.price"
-                        //         }
-                        //     }
+                        image_url: 1,
+                        price: 1,
+                        categoryName: "$category.name",
+                        categoryId: "$category.categoryId",
                     }
                 }
 
