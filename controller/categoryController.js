@@ -83,7 +83,7 @@ module.exports = {
                         _id: 0,
                         productId: 1,
                         productName: "$name",
-                        image:1,
+                        image_url:1,
                         price:1,
                         categoryName:"$category.name",
                         categoryId:"$category.categoryId",
